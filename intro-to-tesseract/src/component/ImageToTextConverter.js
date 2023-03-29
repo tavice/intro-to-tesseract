@@ -11,7 +11,7 @@ function ImageToTextConverter() {
   };
 
   const handleClick = () => {
-    Tesseract.recognize(imagePath, "eng", {
+    Tesseract.recognize(imagePath, "eng", { // "eng" is the language
       logger: (m) => console.log(m),
     })
       .catch((err) => {
@@ -19,11 +19,12 @@ function ImageToTextConverter() {
       })
       .then((result) => {
         // Get Confidence score
-        let confidence = result.confidence;
+        let confidence = result.data.confidence;
 
-        let text = result.text;
-        console.log(text);
-        setText(text);
+        let text = result.data.text; // Get text
+        //console.log(result.data.text);
+        //console.log(result.data.confidence);
+        setText(text);  // setText is a function that sets the text state to the text variable
       });
   };
 
