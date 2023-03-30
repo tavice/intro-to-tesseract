@@ -35,10 +35,11 @@ function ImageToTextConverter() {
         })
         .then((result) => {
           let confidence = result.data.confidence;
-            console.log(confidence);
+            console.log("the confidence is", confidence);
             setConfidence(confidence);
           let text = result.data.text;
           setText(text);
+          console.log("the text is", text);
         });
     } else {
       console.log("Image is not loaded yet!");
@@ -58,7 +59,7 @@ function ImageToTextConverter() {
         />
 
         <h3 className="canvas">Canvas</h3>
-        <canvas ref={canvasRef} width={500} height={500}></canvas>
+        <canvas ref={canvasRef} width={1000} height={1000}></canvas> 
         <h3>Extracted text</h3>
         <div className="pin-box">
           <p> {text} </p>
