@@ -1,41 +1,61 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Tesseract from "tesseract.js";
+import preprocessImage from "./preprocess";
 
 function ImageToTextConverter() {
   const [imagePath, setImagePath] = useState("");
   const [text, setText] = useState("");
+  const canvasRef = useRef(null);
+  const imageRef = useRef(null);
 
   const handleChange = (event) => {
     setImagePath(URL.createObjectURL(event.target.files[0]));
-    //console.log(imagePath);
   };
 
   const handleClick = () => {
-    Tesseract.recognize(imagePath, "eng", { // "eng" is the language
-      logger: (m) => console.log(m),
-    })
-      .catch((err) => {
-        console.error(err);
-      })
-      .then((result) => {
-        // Get Confidence score
-        let confidence = result.data.confidence;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
 
-        let text = result.data.text; // Get text
-        //console.log(result.data.text);
-        //console.log(result.data.confidence);
-        setText(text);  // setText is a function that sets the text state to the text variable
-      });
+    console.log(imageRef.current.complete);
+
+    // Make sure image is loaded before using it
+    if (imageRef.current.complete) {
+      ctx.drawImage(imageRef.current, 0, 0);
+      ctx.putImageData(preprocessImage(canvas), 0, 0);
+
+      Tesseract.recognize(canvasRef.current, "eng", {
+        logger: (m) => console.log(m),
+      })
+        .catch((err) => {
+          console.error(err);
+        })
+        .then((result) => {
+          let confidence = result.data.confidence;
+            console.log(confidence);
+          let text = result.data.text;
+          setText(text);
+        });
+    } else {
+      console.log("Image is not loaded yet!");
+    }
   };
 
   return (
     <div className="App">
       <main className="App-main">
         <h3>Actual imagePath uploaded</h3>
-        <img src={imagePath} className="App-image" alt="logo" />
+        <img
+          src={imagePath}
+          className="App-image"
+          alt="logo"
+          ref={imageRef}
+          onLoad={() => console.log("Image loaded!")}
+        />
 
+        <h3>Canvas</h3>
+        <canvas ref={canvasRef} width={700} height={250}></canvas>
         <h3>Extracted text</h3>
-        <div className="text-box">
+        <div className="pin-box">
           <p> {text} </p>
         </div>
         <input type="file" onChange={handleChange} />
