@@ -59,7 +59,7 @@ function ImageToTextConverter() {
         />
 
         <h3 className="canvas">Canvas</h3>
-        <canvas ref={canvasRef} width={1000} height={1000}></canvas> 
+        <canvas ref={canvasRef} width={500} height={500}></canvas> 
         <h3>Extracted text</h3>
         <div className="pin-box">
           <p> {text} </p>
